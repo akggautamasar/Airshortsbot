@@ -4,11 +4,11 @@
       "memory": 1024,
       "maxDuration": 30
     },
-    "api/telegram-webhook.js": {
+    "api/telegram-webhook.mjs": {
       "memory": 1024,
       "maxDuration": 60
     },
-    "api/test-fetch.js": {
+    "api/test-fetch.mjs": {
       "memory": 1024,
       "maxDuration": 60
     }
@@ -22,11 +22,11 @@
   "rewrites": [
     {
       "source": "/api/bot",
-      "destination": "/api/telegram-webhook"
+      "destination": "/api/telegram-webhook.mjs"
     },
     {
       "source": "/api/test-fetch",
-      "destination": "/api/test-fetch"
+      "destination": "/api/test-fetch.mjs"
     }
   ]
 }
