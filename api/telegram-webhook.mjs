@@ -3,12 +3,13 @@
 // This ensures it's treated as an ES Module, allowing 'import' statements.
 
 import TelegramBot from 'node-telegram-bot-api';
+import fetch from 'node-fetch'; // Explicitly import fetch
 
 // --- Diagnostic Logs - START ---
 console.log('TELEGRAM_WEBHOOK_FUNCTION_STARTING (File loaded)');
 console.log('Checking Environment Variables:');
 console.log('  TELEGRAM_BOT_TOKEN is set:', !!process.env.TELEGRAM_BOT_TOKEN);
-console.log('  NEWS_API_URL_BASE is set:', !!process.env.NEWS_API_URL_BASE);
+console.log('  NEWS_API_URL_BASE is set:', !!process.env.NEWS_API_BASE_URL);
 // --- Diagnostic Logs - END ---
 
 // Environment Variables (These must be set on Vercel under Project Settings -> Environment Variables)
@@ -83,13 +84,17 @@ if (bot) {
         let category = match[1] ? match[1].toLowerCase().trim() : 'all';
         console.log(`Command /news received from chat ${chatId} for category: ${category}`);
 
-        // --- NEW DIAGNOSTIC LOGS START ---
         console.log('DEBUG: 1. Before sending "Fetching latest news..." message.');
-        // --- NEW DIAGNOSTIC LOGS END ---
-        await bot.sendMessage(chatId, `Fetching latest news for category: *${category}*...`, { parse_mode: 'Markdown' });
-        // --- NEW DIAGNOSTIC LOGS START ---
-        console.log('DEBUG: 2. After sending "Fetching latest news..." message. Before category validation.');
-        // --- NEW DIAGNOSTIC LOGS END ---
+        try {
+            await bot.sendMessage(chatId, `Fetching latest news for category: *${category}*...`, { parse_mode: 'Markdown' });
+            console.log('DEBUG: 2. After successfully sending "Fetching latest news..." message. Before category validation.');
+        } catch (sendMsgError) {
+            console.error('ERROR: Failed to send initial "Fetching latest news..." message:', sendMsgError);
+            // Optionally, send a simplified error message to user, without markdown if it's a markdown issue
+            await bot.sendMessage(chatId, "Sorry, I'm having trouble responding right now.", { parse_mode: undefined }); // Remove markdown
+            return; // Exit if we can't even send the initial message
+        }
+
 
         // Define the list of valid categories your API supports.
         const allowedCategories = [
@@ -111,15 +116,10 @@ if (bot) {
             return;
         }
 
-        // --- NEW DIAGNOSTIC LOGS START ---
         console.log('DEBUG: 3. All pre-fetch checks passed. Preparing for fetch block.');
-        // --- NEW DIAGNOSTIC LOGS END ---
 
         try {
-            // --- FIX START ---
-            // Corrected syntax for template literal.
             const newsApiUrl = `${NEWS_API_BASE_URL}?category=${encodeURIComponent(category)}`;
-            // --- FIX END ---
 
             console.log(`Attempting to fetch news from: ${newsApiUrl}`);
             const newsResponse = await fetch(newsApiUrl);
@@ -145,8 +145,6 @@ if (bot) {
             // You could loop through `newsData.data` to send multiple articles if desired.
             const latestNews = newsData.data[0];
 
-            // --- FIX START ---
-            // Completed the htmlMessage template literal.
             const htmlMessage = `
 <b>${latestNews.title ? latestNews.title.replace(/\n/g, ' ').trim() : 'No Title Available'}</b>
 
@@ -154,8 +152,7 @@ ${latestNews.content ? latestNews.content.replace(/\n/g, ' ').substring(0, 1000)
 
 <a href="${latestNews.readMoreUrl}">Read More</a>
 Source: Inshorts by ${latestNews.author ? latestNews.author.trim() : 'Unknown Author'}
-`; // <-- This closing backtick was missing
-            // --- FIX END ---
+`;
 
             // Send the formatted message to the user/chat.
             await bot.sendMessage(chatId, htmlMessage, { parse_mode: 'HTML', disable_web_page_preview: false });
