@@ -8,7 +8,7 @@
       "memory": 1024,
       "maxDuration": 60
     },
-    "api/test-fetch.js": { // <--- ADD THIS BLOCK
+    "api/test-fetch.js": {
       "memory": 1024,
       "maxDuration": 60
     }
@@ -25,7 +25,7 @@
       "destination": "/api/telegram-webhook"
     },
     {
-      "source": "/api/test-fetch", // <--- ADD THIS REWRITE
+      "source": "/api/test-fetch",
       "destination": "/api/test-fetch"
     }
   ]
