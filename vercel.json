@@ -8,21 +8,7 @@
   "crons": [
     {
       "path": "/api/send-news",
-      "schedule": "0 */6 * * *"
-      // This cron schedule means: "At minute 0, every 6th hour (0, 6, 12, 18), every day."
-      // IMPORTANT: This is in UTC time. Adjust for your desired local time.
-      // For 10:00 AM IST (Indian Standard Time), that's 4:30 AM UTC. So, "30 4 * * *"
-      // For 4:00 PM IST, that's 10:30 AM UTC. So, "30 10 * * *"
-      // For 10:00 PM IST, that's 4:30 PM UTC. So, "30 16 * * *"
-      // You can add multiple entries if you want more frequent or specific times.
-      // For example, to run at 10 AM, 4 PM, and 10 PM IST:
-      /*
-        "crons": [
-          { "path": "/api/send-news", "schedule": "30 4 * * *" },
-          { "path": "/api/send-news", "schedule": "30 10 * * *" },
-          { "path": "/api/send-news", "schedule": "30 16 * * *" }
-        ]
-      */
+      "schedule": "*/30 * * * *"
     }
   ]
 }
