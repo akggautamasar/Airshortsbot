@@ -1,0 +1,20 @@
+{
+  "functions": {
+    "api/send-news.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/send-news",
+      "schedule": "0 */6 * * *"
+      // This runs every 6 hours (at minute 0, past hours 0, 6, 12, 18 UTC)
+      // If you need specific Indian Standard Time (IST) for your local time (UTC+5:30):
+      // For 10:00 AM IST, use "30 4 * * *" (4:30 AM UTC)
+      // For 4:00 PM IST, use "30 10 * * *" (10:30 AM UTC)
+      // For 10:00 PM IST, use "30 16 * * *" (4:30 PM UTC)
+      // You can add more cron entries for multiple specific times.
+    }
+  ]
+}
