@@ -7,6 +7,10 @@
     "api/telegram-webhook.js": {
       "memory": 1024,
       "maxDuration": 60
+    },
+    "api/test-fetch.js": { // <--- ADD THIS BLOCK
+      "memory": 1024,
+      "maxDuration": 60
     }
   },
   "crons": [
@@ -19,6 +23,10 @@
     {
       "source": "/api/bot",
       "destination": "/api/telegram-webhook"
+    },
+    {
+      "source": "/api/test-fetch", // <--- ADD THIS REWRITE
+      "destination": "/api/test-fetch"
     }
   ]
 }
